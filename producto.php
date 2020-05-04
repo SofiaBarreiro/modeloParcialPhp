@@ -2,7 +2,8 @@
 
 
 
-abstract class producto{
+abstract class producto
+{
 
 
     public $IDProdcto;
@@ -11,17 +12,47 @@ abstract class producto{
     public $stock;
     public $foto;
 
-    public function __construct($IDProdcto, $marca, $precio, $stock, $foto)    
-    {  
+    public function __construct($IDProdcto, $marca, $precio, $stock, $foto)
+    {
         $this->IDProdcto = $IDProdcto;
         $this->marca = $marca;
         $this->precio = $precio;
         $this->stock = $stock;
         $this->foto = $foto;
-    }   
+    }
 
 
 
+    public static function GuardarFoto($file)
+    {
+        $file1 = $file['name'];
+        $temp_name = $file['tmp_name'];
+        $destination = '..\ModeloParcial\imagenes' . '\\' . $file1;
+
+        move_uploaded_file($temp_name, $destination);
+
+        return $destination;
+    }
+
+
+    public static function moverFoto($file)
+    {
+        $file1 = $file['name'];
+        $temp_name = $file['tmp_name'];
+        $destination = '..\ModeloParcial\backUpFotos' . '\\' . $file1;
+
+        move_uploaded_file($temp_name, $destination);
+
+        return $destination;
+    }
+
+    public static function cambiarNombre($file)
+    {
+
+        $file1 = $file['name'];
+        $nuevoNombre = rename($file1, '..\\ModeloParcial\\backUpFotos' . '\\' . "nuevaFoto.jpg");
+        return $nuevoNombre;
+    }
+
+    
 }
-
-
