@@ -30,7 +30,7 @@ public function Save($cadena){
 
     public function generarIdProducto(){
 
-    $this->IDProdcto = ($this->marca . 'medicamento');
+    $this->IDProducto = ($this->marca . 'medicamento');
 
     return $this->IDProducto;   
     }

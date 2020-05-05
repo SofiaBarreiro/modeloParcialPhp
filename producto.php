@@ -12,9 +12,8 @@ abstract class producto
     public $stock;
     public $foto;
 
-    public function __construct($IDProdcto, $marca, $precio, $stock, $foto)
+    public function __construct( $marca, $precio, $stock, $foto)
     {
-        $this->IDProdcto = $IDProdcto;
         $this->marca = $marca;
         $this->precio = $precio;
         $this->stock = $stock;
@@ -27,8 +26,7 @@ abstract class producto
     {
         $file1 = $file['name'];
         $temp_name = $file['tmp_name'];
-        $destination = '..\ModeloParcial\imagenes' . '\\' . $file1;
-
+        $destination = $file1;
         move_uploaded_file($temp_name, $destination);
 
         return $destination;

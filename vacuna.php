@@ -28,8 +28,7 @@ class vacuna extends producto{
     
         public function generarIdProducto(){
     
-        $this->IDProdcto = ($this->marca . 'vacuna');
-    
+        $this->IDProducto = $this->marca . 'vacuna';
         return $this->IDProducto;   
         }
     }
