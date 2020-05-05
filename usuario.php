@@ -27,6 +27,24 @@ class usuario{
         return $this->ID = ($this->nombre . $this->tipo);
     }   
 
+public static function crearToken($clave, $nombre){
+
+    
+    $payload = array(
+        "iss" => "http://example.org",
+        "aud" => "http://example.com",
+        "iat" => 1356999524,
+        "nbf" => 1357000000,
+        "clave" => $clave,
+        "nombre" => $nombre,
+
+    );
+
+
+    return $payload;
+}
+
+
 }
 
 

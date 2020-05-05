@@ -5,6 +5,11 @@ require __DIR__ . '/producto.php';
 require __DIR__ . '/medicamento.php';
 require __DIR__ . '/vacuna.php';
 
+require_once 'vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+
+
 $request_Method = $_SERVER["REQUEST_METHOD"];
 $path_info = $_SERVER["PATH_INFO"];
 
@@ -19,10 +24,26 @@ $session = $_SESSION["CLAVE"] = "VALOR";
 $session = $_SESSION['nombre'] = $_GET['nombre'];
 }
 
+
+session_destroy();//para borrar las cookies
+setcookie('nombre', 'juan');
+
 die(); */
+
+
 
 session_start();
 $session = $_SESSION ?? false;
+
+
+
+/*
+ NOTE: This will now be an object instead of an associative array. To get
+ an associative array, you will need to cast it as such:
+*/
+
+
+
 
 switch ($path_info) {
 
@@ -73,9 +94,20 @@ switch ($path_info) {
 
                 if ($_SESSION['nombre'] == $nombre && $_SESSION['clave'] == $clave) {
 
-                    //devuelvo un JWT
-                    //devuelvo un token
-                    echo 'token';
+                    $key = "example_key";
+                    $payload = usuario::crearToken($clave, $nombre);
+                    $jwt = JWT::encode($payload, $key);
+
+                    $decoded = JWT::decode($jwt, $key, array('HS256'));
+                    $decoded_array = (array) $decoded;
+                    print_r($jwt);
+                    print_r($jwt);
+                    $_SESSION['token'] = $jwt;
+
+                    $header = getallheaders();
+
+
+                    var_dump($header);
                 } else {
                     echo 'nombre de usuario o clave incorrecta';
                 }
@@ -138,9 +170,7 @@ switch ($path_info) {
                             list($txt, $ext) = explode(".", $_FILES['foto']['name']);
 
                             $watermark = "Sofia Barreiro"; // Add your own water mark here
-                            addTextWatermark($_FILES['foto']['name'], $watermark, $_FILES['foto']['name']);
-
-                            
+                            addTextWatermark($_FILES['foto']['name'], $watermark, $ext, $_FILES['foto']['name']);
                         } else {
 
                             if ($producto == 'medicamento') {
@@ -278,17 +308,36 @@ switch ($path_info) {
 }
 
 
-function addTextWatermark($src, $watermark,  $save = NULL)
+function addTextWatermark($src, $watermark,  $ext ,$save = NULL)
 {
 
-   
+
 
     list($width, $height) = getimagesize($src);
     $image_color = imagecreatetruecolor($width, $height);
-    $image = imagecreatefromjpeg($src);
+
+    switch ($ext) {
+
+        case 'jpg':
+            $image = imagecreatefromjpeg($src);
+            break;
+        case 'png':
+            $image = imagecreatefrompng($src);
+            break;
+        case 'gif':
+            $image = imagecreatefromgif($src);
+            break;
+        default: echo 'error tipo de archivo invalido';
+        break;
+    }
+   
+
+  
+
+
     imagecopyresampled($image_color, $image, 0, 0, 0, 0, $width, $height, $width, $height);
-    $txtcolor = imagecolorallocate($image_color, 255, 255, 255);
-    $fuente = 'arial.ttf';
+    $txtcolor = imagecolorallocate($image, 255, 255, 255);
+    $fuente = "AlexBrush-Regular.ttf";
     $font_size = 50;
     imagettftext($image_color, $font_size, 0, 50, 150, $txtcolor, $fuente, $watermark);
     if ($save <> '') {
@@ -297,8 +346,9 @@ function addTextWatermark($src, $watermark,  $save = NULL)
         header('Content-Type: image/jpeg');
         imagejpeg($image_color, null, 100);
     }
+
+
+
     imagedestroy($image);
     imagedestroy($image_color);
-
-  
 }
